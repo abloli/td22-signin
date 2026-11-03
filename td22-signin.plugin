@@ -4,9 +4,8 @@
 #!icon=checkmark.circle
 
 [Script]
-cron "5 9 * * *" script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-signin.js, timeout=60, enabled=true, tag=猛将OL签到
-http-request ^https?://sb\.td22\.com/ac/20240920/index\.aspx script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-capture.js, timeout=10, enabled=true, tag=猛将OL抓Cookie
-http-request ^https?://user\.td22\.com/ script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-capture.js, timeout=10, enabled=true, tag=猛将OL抓Cookie登录
+cron "5 9 * * *" script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-checkin.js, timeout=60, enabled=true, tag=猛将OL签到
+http-request ^https?://(sb|user)\.td22\.com/ script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-checkin.js, timeout=10, enabled=true, tag=猛将OL抓Cookie
 
 [MITM]
 hostname = sb.td22.com, user.td22.com
