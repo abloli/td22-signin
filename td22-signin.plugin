@@ -1,10 +1,10 @@
-#!name=td22游戏签到
-#!desc=td22游戏每日签到，多账号自动签到
+#!name=猛将游戏签到
+#!desc=猛将游戏每日签到，多账号自动签到，可在插件设置里改时间
 #!author=abloli
 #!icon=checkmark.circle
 
 [Rewrite]
-^https://sb\.td22\.com/ac/20240920/index\.aspx script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-capture.js, requires-body=0, timeout=10, tag=td22抓Cookie
+^https://sb\.td22\.com/ac/20240920/index\.aspx script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-capture.js, requires-body=0, timeout=10, tag=猛将抓Cookie
 
 [Script]
-cron "5 9 * * *" script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-signin.js, tag=td22签到, timeout=60
+cron "0 * * * *" script-path=https://raw.githubusercontent.com/abloli/td22-signin/main/td22-signin.js, tag=猛将签到, timeout=60, argument="time=9:05"
