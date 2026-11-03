@@ -26,13 +26,20 @@ function done() {
 }
 
 function main() {
-  // 解析用户设置的时间，默认 9:05
-  // $argument 格式：time=9:05 或空
+  // 解析插件设置里的时间，默认 9:05
+  // 插件里 #!arguments=签到时间:9:05，用户在插件设置里改了时间后，
+  // Loon 会把新值传给脚本。$argument 可能是 "9:05"、"签到时间=9:05"、
+  // "签到时间:9:05" 或 "time=9:05" 等格式，这里都兼容。
   let targetHour = 9;
   let targetMin = 5;
   try {
-    let arg = $argument || "";
-    let m = arg.match(/time=(\d{1,2}):(\d{1,2})/);
+    let arg = "";
+    if (typeof $argument === "string") {
+      arg = $argument;
+    } else if ($argument && typeof $argument === "object") {
+      arg = $argument["签到时间"] || $argument["time"] || $argument["签到时间 "] || "";
+    }
+    let m = String(arg).match(/(\d{1,2}):(\d{1,2})/);
     if (m) {
       targetHour = parseInt(m[1], 10);
       targetMin = parseInt(m[2], 10);
