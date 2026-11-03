@@ -3,15 +3,12 @@
 #!author=iloli
 #!icon=checkmark.circle
 
-[Argument]
-签到时间 = input,"9:05",tag=签到时间,desc=每天几点签到，格式如 9:05
-
 [Rewrite]
 ^https://sb\.td22\.com/ac/20240920/index\.aspx script-path=https://cdn.jsdelivr.net/gh/abloli/td22-signin@main/td22-capture.js, requires-body=0, timeout=10, tag=猛将OL抓Cookie
 ^https://user\.td22\.com/.* script-path=https://cdn.jsdelivr.net/gh/abloli/td22-signin@main/td22-capture.js, requires-body=0, timeout=10, tag=猛将OL抓Cookie登录
 
 [Script]
-cron "0 * * * *" script-path=https://cdn.jsdelivr.net/gh/abloli/td22-signin@main/td22-signin.js, tag=猛将OL签到, timeout=60, argument="[{签到时间}]"
+cron "5 9 * * *" script-path=https://cdn.jsdelivr.net/gh/abloli/td22-signin@main/td22-signin.js, tag=猛将OL签到, timeout=60
 
 [MITM]
 hostname = sb.td22.com, user.td22.com
