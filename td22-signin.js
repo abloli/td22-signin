@@ -1,11 +1,12 @@
-// td22 游戏每日签到 - Loon 定时脚本（多账号）
+// td22 游戏每日签到 - Loon 定时脚本（多账号，可自定义时间）
 //
 // 原理：签到接口 GET /ac/20240920/IHttpHandle/comeback2.ashx?t=1
 // 只需要登录态 Cookie，不需要验证码。Cookie 由配套的 td22-capture.js
 // 在你平时用 Safari 打开签到页时自动抓取并存到 $persistentStore。
 //
-// 定时：Loon -> 配置 -> 定时任务，每天 9 点左右跑一次，例如：
-//   cron "0 9 * * *" script-path=td22-signin.js, tag=td22签到
+// 时间设置：在 Loon 插件设置里改签到时间，格式 HH:MM，默认 9:05。
+// 插件的 cron 每小时跑一次，脚本只在设定的那个小时内真正签到，
+// 其他小时静默退出，不发通知。
 //
 // 账号列表存在 $persistentStore 的 td22_accounts 里，格式：
 //   [{"name":"账号1","cookie":"ASP.NET_SessionId=xxx; ..."}, ...]
@@ -25,20 +26,39 @@ function done() {
 }
 
 function main() {
+  // 解析用户设置的时间，默认 9:05
+  // $argument 格式：time=9:05 或空
+  let targetHour = 9;
+  let targetMin = 5;
+  try {
+    let arg = $argument || "";
+    let m = arg.match(/time=(\d{1,2}):(\d{1,2})/);
+    if (m) {
+      targetHour = parseInt(m[1], 10);
+      targetMin = parseInt(m[2], 10);
+    }
+  } catch (e) {}
+
+  // 只在目标小时内签到，其他小时静默退出
+  let now = new Date();
+  if (now.getHours() !== targetHour) {
+    return done();
+  }
+
   let raw = $persistentStore.read(KEY);
   if (!raw) {
-    notify("td22签到", "没有已保存的账号", "先用 Safari 打开签到页并登录，Cookie 会自动抓取");
+    notify("猛将OL签到", "没有已保存的账号", "先用 Safari 打开签到页并登录，Cookie 会自动抓取");
     return done();
   }
   let accounts;
   try {
     accounts = JSON.parse(raw);
   } catch (e) {
-    notify("td22签到", "账号数据损坏", "请清空后重新登录抓取");
+    notify("猛将OL签到", "账号数据损坏", "请清空后重新登录抓取");
     return done();
   }
   if (!accounts.length) {
-    notify("td22签到", "账号列表为空", "先用 Safari 打开签到页并登录");
+    notify("猛将OL签到", "账号列表为空", "先用 Safari 打开签到页并登录");
     return done();
   }
 
@@ -50,7 +70,7 @@ function main() {
       let okCount = results.filter((r) => r.ok).length;
       let lines = results.map((r) => (r.ok ? "✅ " : "❌ ") + r.name + "：" + r.msg);
       notify(
-        "td22签到完成 " + okCount + "/" + accounts.length,
+        "猛将OL签到完成 " + okCount + "/" + accounts.length,
         "",
         lines.join("\n")
       );
